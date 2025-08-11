@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home Based New Born Care (HBNC) — Calculator</title>
+  <meta name="description" content="Ensure newborn health with Home Based Newborn Care (HBNC) – timely home visits, essential care, and early illness detection by trained health workers." />
+  <meta name="author" content="Sudheer Singh" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600;700&family=Noto+Color+Emoji&family=Noto+Sans+Devanagari:wght@100..900&display=swap" rel="stylesheet">
+
+  <!-- jQuery + jQuery UI -->
+  <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #1976d2;
+      --primary-dark: #0056c7;
+      --muted: #666;
+      --error: #e53935;
+      --card-bg: #ffffff;
+      --page-bg: #f5f5f5;
+    }
+    html,body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      background: var(--page-bg);
+      font-family: "Noto Sans", "Noto Sans Devanagari", "Segoe UI", sans-serif;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display: flex;
+      justify-content: center;
+    }
+    .card {
+      width: 100%;
+      max-width: 420px;
+      padding: 16px;
+    }
+    h2 {
+      margin: 6px 0 4px;
+      text-align: center;
+      font-size: 20px;
+    }
+    p.lead {
+      margin: 0 0 14px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .label-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: #263238;
+      text-align: center;
+      margin-bottom: 8px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+    }
+    .date-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: start;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .field { display:flex; flex-direction: column; }
+    label {
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input[type="number"] {
+      padding: 8px;
+      font-size: 15px;
+      text-align: center;
+      border: 1px solid #d0d7de;
+      border-radius: 6px;
+      transition: box-shadow .15s, border-color .15s;
+      background: #fff;
+    }
+    input[type="number"]:focus {
+      border-color: var(--primary);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(25,118,210,0.07);
+    }
+    .helper { font-size: 12px; color: var(--muted); margin-top: 5px; }
+    .no-arrows::-webkit-inner-spin-button,
+    .no-arrows::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .no-arrows { -moz-appearance: textfield; appearance: textfield; }
+    #datepicker { display: none; }
+    #calendarIcon {
+      align-self: center;
+      height: 40px;
+      width: 40px;
+      margin-top: 22px;
+      background: none;
+      border: none;
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer;
+      border-radius: 8px;
+    }
+    #calendarIcon img { width: 22px; height: 22px; }
+    .action-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0px;
+    }
+    .left-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    .clear-btn, .today-btn {
+      background: #f5f5f5;
+      border: none;
+      padding: 5px 10px;
+      padding-top: 7px;
+      border-radius: 3px;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 16px;
+      cursor: pointer;
+      color: #444;
+    }
+    .today-btn {
+      background: none;
+      padding: 6px 0;
+    }
+    .clear-btn:hover {
+      background: #e8e8e8;
+    }
+    .generate-btn {
+      background: #007bff;
+      border: none;
+      color: white;
+      font-weight: 500;
+      padding: 8px 20px;
+      padding-top: 10px;
+      border-radius: 50px;
+      cursor: pointer;
+      font-family: 'Noto Sans Devanagari', sans-serif;
+      font-size: 16px;
+    }
+    .generate-btn:hover {
+      background: #0069d9;
+    }
+    .separator {
+      width: 1px;
+      height: 30px;
+      background-color: #e8e8e8;
+      margin: 0 3px;
+    }
+    #result {
+      margin-top: 14px;
+      font-size: 15px;
+      color: #222;
+      background: #fafafa;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #eee;
+      min-height: 38px;
+    }
+    .result-header {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: #263238;
+      margin-bottom: 8px;
+    }
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .result-table th, .result-table td {
+      padding: 8px 10px;
+      border: 1px solid #e6e6e6;
+      text-align: left;
+    }
+    .result-table tbody tr:nth-child(odd) { background: #fff; }
+    .result-table tbody tr:nth-child(even) { background: #f7f9fb; }
+
+    .result-table td:nth-child(2) { white-space: nowrap; font-weight: 600; }
+
+    /* error shake */
+    .error { border-color: var(--error) !important; animation: shake 0.28s ease-in-out; }
+    input.error:focus { box-shadow: 0 0 0 3px rgba(255, 127, 80, 0.35); }
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      20% { transform: translateX(-4px); }
+      40% { transform: translateX(4px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+
+    /* small screens */
+    @media (max-width:420px) {
+      .date-grid { grid-template-columns: 1fr 1fr 1fr auto; gap:8px; }
+      input[type="number"] { font-size: 14px; padding: 7px; }
+    }
+
+    
+  </style>
+</head>
+<body>
+  <div class="card" role="main" aria-labelledby="title">
+    <h2 id="title">👼 HBNC Date Calculator</h2>
+    <p class="lead">HBNC गृह भ्रमण के 7 निर्धारित दिन (जन्म के दिन को <strong>पहला दिन</strong> मानकर)</p>
+
+    <div class="label-text">नीचे बच्चे का जन्मदिन दर्ज करें</div>
+    <div class="date-grid" role="group" aria-label="DOB fields">
+      <div class="field">
+        <label for="day">दिन</label>
+        <input class="no-arrows" type="number" inputmode="numeric" id="day" min="1" max="31" aria-label="दिन (DD)">
+        <div class="helper">DD</div>
+      </div>
+
+      <div class="field">
+        <label for="month">माह</label>
+        <input class="no-arrows" type="number" inputmode="numeric" id="month" min="1" max="12" aria-label="माह (MM)">
+        <div class="helper">MM</div>
+      </div>
+
+      <div class="field">
+        <label for="year">साल</label>
+        <input class="no-arrows" type="number" inputmode="numeric" id="year" min="1900" max="2100" aria-label="साल (YYYY)">
+        <div class="helper">YYYY</div>
+      </div>
+
+      <div class="field">
+        <input type="text" id="datepicker" readonly aria-hidden="true">
+        <button id="calendarIcon" title="कैलेंडर खोलें" aria-label="Open calendar">
+          <img src="https://jqueryui.com/resources/demos/datepicker/images/calendar.gif" alt="Calendar">
+        </button>
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <div class="left-buttons">
+        <button class="clear-btn" onclick="resetFields()">सब मिटाएँ</button>
+        <div class="separator"></div>
+        <button class="today-btn" onclick="setToday()">आज की तारीख़</button>
+      </div>
+      
+      <div class="right-buttons">
+        <button class="generate-btn" onclick="calculateDates()"> गणना करें
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-walking" viewBox="0 0 16 16">
+            <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 0 1-.088.395l-.318.906.213.242a.8.8 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z"/>
+            <path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.8.8 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z"/>
+          </svg>
+         
+        </button>
+      </div>
+    </div>    
+
+    <div id="result" class="error-msg" aria-live="polite"></div>
+  </div>
+
+<script>
+  let fieldErrors = { day: "", month: "", year: "" };
+
+  const HINDI_MONTHS = ["जनवरी","फ़रवरी","मार्च","अप्रैल","मई","जून","जुलाई","अगस्त","सितंबर","अक्टूबर","नवंबर","दिसंबर"];
+  const WEEKDAYS_HINDI = ['रविवार','सोमवार','मंगलवार','बुधवार','गुरुवार','शुक्रवार','शनिवार'];
+  const ORDINALS_HINDI = ['पहला','दूसरा','तीसरा','चौथा','पाँचवाँ','छठा','सातवाँ','आठवाँ','नवाँ','दसवाँ','ग्यारहवाँ','बारहवाँ','तेरहवाँ','चौदहवाँ','पंद्रहवाँ','सोलहवाँ','सत्रहवाँ','अठारहवाँ','उन्नीसवाँ','बीसवाँ','इक्कीसवाँ','बाइसवाँ','तेईसवाँ','चौबीसवाँ','पच्चीसवाँ','छब्बीसवाँ','सत्ताइसवाँ','अट्ठाइसवाँ','उनतीसवाँ','तीसवाँ','इत्यादि'];
+
+  const VISITS = [
+    { labelHindi: "पहला दिन", labelEng: "Day 1", offset: 0, icon: "👶" },
+    { labelHindi: "तीसरा दिन", labelEng: "Day 3", offset: 2, icon: "🏠" },
+    { labelHindi: "सातवां दिन", labelEng: "Day 7", offset: 6, icon: "🩺" },
+    { labelHindi: "चौदहवां दिन", labelEng: "Day 14", offset: 13, icon: "👩‍⚕️" },
+    { labelHindi: "इक्कीसवां दिन", labelEng: "Day 21", offset: 20, icon: "🏥" },
+    { labelHindi: "अट्ठाईसवां दिन", labelEng: "Day 28", offset: 27, icon: "📋" },
+    { labelHindi: "बयालिसवां दिन", labelEng: "Day 42", offset: 41, icon: "✅" }
+  ];
+
+  $(document).ready(function () {
+    $("#day").focus();
+
+    $.datepicker.regional['hi'] = {
+      closeText: "बंद",
+      prevText: "पिछला",
+      nextText: "अगला",
+      currentText: "आज",
+      monthNames: HINDI_MONTHS,
+      monthNamesShort: ["जन", "फर", "मार्च", "अप्रै", "मई", "जून", "जुल", "अग", "सित", "अक्ट", "नव", "दि"],
+      dayNames: ["रविवार","सोमवार","मंगलवार","बुधवार","गुरुवार","शुक्रवार","शनिवार"],
+      dayNamesShort: ["रवि","सोम","मंगल","बुध","गुरु","शुक्र","शनि"],
+      dayNamesMin: ["र","सो","मं","बु","गु","शु","श"],
+      weekHeader: "हफ्ता",
+      dateFormat: "dd/mm/yy",
+      firstDay: 1,
+      isRTL: false,
+      showMonthAfterYear: false
+    };
+    $.datepicker.setDefaults($.datepicker.regional["hi"]);
+
+    $("#datepicker").datepicker({
+      dateFormat: "dd/mm/yy",
+      onSelect: function (dateText) {
+        const [dd, mm, yy] = dateText.split('/');
+        $("#day").val(dd.padStart(2,'0'));
+        $("#month").val(mm.padStart(2,'0'));
+        $("#year").val(yy);
+        $("#result").html("");
+      }
+    });
+
+    $("#calendarIcon").on("click", function () {
+      $("#datepicker").datepicker("show");
+    });
+
+    $("#day, #month, #year").on("input", function () {
+      const id = $(this).attr('id');
+      let val = $(this).val();
+
+      val = val.replace(/[^\d]/g, '');
+      $(this).val(val);
+
+      if ((id === "day" || id === "month") && val.length > 2) {
+        $(this).val(val.slice(0,2));
+      }
+      if (id === "year" && val.length > 4) {
+        $(this).val(val.slice(0,4));
+      }
+
+      if (id === "day" && $(this).val().length === 2) $("#month").focus();
+      if (id === "month" && $(this).val().length === 2) $("#year").focus();
+
+      $(this).removeClass('error');
+      fieldErrors[id] = "";
+      showErrors();
+    });
+
+    $("#month, #year").on("keydown", function (e) {
+      if (e.key === "Backspace" && $(this).val().length === 0) {
+        if (this.id === "year") $("#month").focus();
+        else if (this.id === "month") $("#day").focus();
+      }
+    });
+
+    $("#day, #month, #year").on("change", function () {
+      const d = parseInt($("#day").val());
+      const m = parseInt($("#month").val());
+      const y = parseInt($("#year").val());
+      if (!isNaN(d) && !isNaN(m) && !isNaN(y)) {
+        const err = highlightInvalidInputs(d, m, y);
+        if (!err) {
+          const dt = new Date(y, m - 1, d);
+          $("#datepicker").datepicker("setDate", dt);
+        }
+      }
+    });
+
+    $("#day, #month, #year").on("keydown", function (e) {
+      if (e.key === "Enter" || e.keyCode === 13) {
+        e.preventDefault();
+        $(".calculate-btn").click();
+      }
+    });
+
+    const focusableFields = ["#day", "#month", "#year"];
+    $(document).on("keydown", function (e) {
+      if (e.key === "Tab") {
+        const current = document.activeElement.id;
+        const idx = focusableFields.indexOf("#" + current);
+        if (idx !== -1) {
+          e.preventDefault();
+          const nextIndex = e.shiftKey ? (idx - 1 + focusableFields.length) % focusableFields.length : (idx + 1) % focusableFields.length;
+          $(focusableFields[nextIndex]).focus();
+        }
+      }
+    });
+
+  }); // end ready
+
+  function showErrors() {
+    const messages = Object.values(fieldErrors).filter(msg => msg !== "");
+    if (messages.length > 0) {
+      $("#result").html(messages.map(m => `<div>• ${m}</div>`).join(""));
+    } else {
+      $("#result").html("");
+    }
+  }
+
+  function triggerShake(selector) {
+    const el = $(selector);
+    el.removeClass("error");
+    // force reflow
+    void el[0].offsetWidth;
+    el.addClass("error");
+  }
+
+  function highlightInvalidInputs(day, month, year) {
+    fieldErrors = { day: "", month: "", year: "" };
+    ["#day","#month","#year"].forEach(id => $(id).removeClass("error"));
+    let firstInvalid = null;
+
+    if (isNaN(day) || day < 1 || day > 31) {
+      triggerShake("#day");
+      fieldErrors.day = "<b>दिन (Day)</b> ➤ 1 से 31 के बीच होना चाहिए।";
+      if (!firstInvalid) firstInvalid = "#day";
+    }
+
+    if (isNaN(month) || month < 1 || month > 12) {
+      triggerShake("#month");
+      fieldErrors.month = "<b>महीना (Month)</b> ➤ 1 से 12 के बीच होना चाहिए।";
+      if (!firstInvalid) firstInvalid = "#month";
+    }
+
+    if (isNaN(year) || year < 1900 || year > 2100) {
+      triggerShake("#year");
+      fieldErrors.year = "<b>साल (Year)</b> ➤ 1900 से 2100 के बीच होना चाहिए।";
+      if (!firstInvalid) firstInvalid = "#year";
+    }
+
+    if (!Object.values(fieldErrors).some(e => e)) {
+      const dt = new Date(year, month - 1, day);
+      const valid = dt.getFullYear() === year && dt.getMonth() === (month - 1) && dt.getDate() === day;
+      if (!valid) {
+        triggerShake("#day"); triggerShake("#month"); triggerShake("#year");
+        fieldErrors.day = "आपकी दी गई तिथि कैलेंडर के अनुसार मान्य नहीं है, कृपया जाँचें।";
+        if (!firstInvalid) firstInvalid = "#day";
+      }
+    }
+
+    showErrors();
+    if (firstInvalid) $(firstInvalid).focus();
+    return firstInvalid ? "Error" : null;
+  }
+
+  const utils = {
+    addDays(date, days) {
+      const nd = new Date(date);
+      nd.setDate(nd.getDate() + days);
+      return nd;
+    },
+    formatDateHindi(date) {
+      const d = date.getDate();
+      const m = HINDI_MONTHS[date.getMonth()];
+      const y = date.getFullYear();
+      return `${d} ${m} ${y}`;
+    },
+    getWeekdayPositionInMonthHindi(date) {
+      const target = date.getDay();
+      const year = date.getFullYear();
+      const month = date.getMonth();
+      let count = 0;
+      for (let day = 1; day <= date.getDate(); day++) {
+        const cur = new Date(year, month, day);
+        if (cur.getDay() === target) count++;
+      }
+      const ordinal = ORDINALS_HINDI[count - 1] || `${count}वाँ`;
+      const weekday = WEEKDAYS_HINDI[target];
+      return `महीने का ${ordinal} ${weekday}`;
+    }
+  };
+
+  function setToday() {
+    const today = new Date();
+    $("#day").val(String(today.getDate()).padStart(2, '0'));
+    $("#month").val(String(today.getMonth() + 1).padStart(2, '0'));
+    $("#year").val(today.getFullYear());
+    $("#datepicker").datepicker("setDate", today);
+    $("#result").html("");
+  }
+
+  function resetFields() {
+    $("#day,#month,#year").val("");
+    $("#result").html("");
+    $("#day,#month,#year").removeClass("error");
+    $("#datepicker").datepicker("setDate", null);
+    fieldErrors = { day: "", month: "", year: "" };
+    $("#day").focus();
+  }
+
+  function addLeadingZero(input) {
+    let value = input.value.trim();
+    if (value.length === 1 && value !== "0") {
+      input.value = value.padStart(2, "0");
+    }
+  }
+
+  document.getElementById("day").addEventListener("blur", function() {
+    addLeadingZero(this);
+  });
+  document.getElementById("month").addEventListener("blur", function() {
+    addLeadingZero(this);
+  });
+
+  function calculateDates() {
+    const d = parseInt($("#day").val());
+    const m = parseInt($("#month").val());
+    const y = parseInt($("#year").val());
+
+    const err = highlightInvalidInputs(d, m, y);
+    if (err) return;
+
+    const dob = new Date(y, m - 1, d);
+    if (isNaN(dob.getTime())) {
+      $("#result").html("❌ आपकी दी हुई तिथि मान्य नहीं है।");
+      return;
+    }
+
+    // Weekday position in month, optional info
+    const weekdayPosition = utils.getWeekdayPositionInMonthHindi(dob);
+
+    // Build result HTML
+    let html = `<div class="result-header"><strong>🗓 नवजात शिशु की जन्म तिथि:</strong> ${utils.formatDateHindi(dob)}</div>`;
+    html += `<div style="margin-bottom:6px;"><strong>📌 दिन:</strong> ${weekdayPosition}</div>`;
+    html += `<table class="result-table" role="table" aria-label="HBNC Visits"><thead><tr><th>भ्रमण</th><th>तिथि</th></tr></thead><tbody>`;
+
+    // VISITS are already in chronological order with DOB as Day 1 (offset 0)
+    VISITS.forEach(v => {
+      const visitDate = utils.addDays(dob, v.offset);
+      html += `<tr><td>${v.icon} ${v.labelHindi} (${v.labelEng})</td><td>${utils.formatDateHindi(visitDate)}</td></tr>`;
+    });
+
+    html += `</tbody></table>`;
+    html += `<div style="margin-top:8px;font-size:13px;color:${'#555'}">कुल दौरे: <strong>${VISITS.length}</strong></div>`;
+
+    $("#result").html(html);
+  }
+</script>
+</body>
+</html>
